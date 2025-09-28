@@ -10,3 +10,5 @@
 2025-09-28 16:02:07,935 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1695.9
 2025-09-28 16:05:05,496 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1849.5
 2025-09-28 17:05:02,256 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1326.5
+2025-09-28 18:05:10,378 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1368.0
+2025-09-28 19:05:11,981 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1579.0
