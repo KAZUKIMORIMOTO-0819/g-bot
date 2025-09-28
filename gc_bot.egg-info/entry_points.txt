@@ -1,0 +1,2 @@
+[console_scripts]
+gc-bot-run = gc_bot.cli:main

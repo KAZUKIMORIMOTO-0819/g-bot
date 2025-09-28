@@ -1,0 +1,16 @@
+# Pythonキャッシュ
+__pycache__/
+*.pyc
+
+# 仮想環境
+.venv/
+env/
+
+# Jupyterのチェックポイント
+.ipynb_checkpoints/
+
+# OS依存ファイル
+.DS_Store
+
+# 環境変数や秘密情報
+.env

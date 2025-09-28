@@ -1,0 +1,13 @@
+{
+  "position": "FLAT",
+  "entry_price": 0.0,
+  "size": 0.0,
+  "tp": 0.0,
+  "sl": 0.0,
+  "pnl_cum": 0.0,
+  "streak_loss": 0,
+  "last_gc_bar_ts": null,
+  "entry_ts_jst": null,
+  "last_updated_jst": "2025-09-28T16:05:05+09:00",
+  "last_daily_summary_date": null
+}

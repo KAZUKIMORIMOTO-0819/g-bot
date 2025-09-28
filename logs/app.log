@@ -1,0 +1,3 @@
+2025-09-28 15:37:02,760 [INFO] Structured logger initialized.
+2025-09-28 15:37:06,246 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=3486.2
+2025-09-28 15:37:06,247 [WARNING] Insufficient data rows (4) for SMA computation; need at least 60.

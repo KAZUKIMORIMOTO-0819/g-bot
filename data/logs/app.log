@@ -1,0 +1,12 @@
+2025-09-28 15:54:44,083 [INFO] Structured logger initialized.
+2025-09-28 15:54:45,708 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1624.1
+2025-09-28 15:57:19,941 [INFO] Structured logger initialized.
+2025-09-28 15:57:21,948 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=2004.9
+2025-09-28 15:59:18,354 [INFO] Structured logger initialized.
+2025-09-28 15:59:20,269 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1911.0
+2025-09-28 16:00:56,689 [INFO] Structured logger initialized.
+2025-09-28 16:00:58,377 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1687.1
+2025-09-28 16:02:06,237 [INFO] Structured logger initialized.
+2025-09-28 16:02:07,935 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1695.9
+2025-09-28 16:05:05,496 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1849.5
+2025-09-28 17:05:02,256 [INFO] ccxt.fetch_ohlcv_or_trades ok=True latency_ms=1326.5

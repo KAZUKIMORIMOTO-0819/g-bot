@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gc-bot"
+version = "0.1.0"
+description = "Golden cross trading bot utilities"
+authors = [{ name = "g-bot team" }]
+readme = "GC_仕様書.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4.0"]
+
+[project.scripts]
+gc-bot-run = "gc_bot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gc_bot*"]
+
+[tool.setuptools.package-data]
+"gc_bot" = ["py.typed"]

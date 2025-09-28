@@ -1,0 +1,3 @@
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 3486.180067062378, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 4}, "ts_jst": "2025-09-28T15:37:06+09:00"}
+{"type": "stage", "name": "fetched", "rows": 4, "ts_jst": "2025-09-28T15:37:06+09:00"}
+{"type": "stage", "name": "insufficient_data", "rows": 4, "ts_jst": "2025-09-28T15:37:06+09:00"}
