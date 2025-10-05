@@ -1,0 +1,95 @@
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1192.6469802856445, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T00:12:49+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T00:12:49+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-02 23:00:00+09:00", "price": 436.24, "ts_jst": "2025-10-03T00:12:49+09:00"}
+{"type": "stage", "name": "done", "position": "LONG", "pnl_cum": 0.0, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T00:12:49+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1117.3992156982422, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T01:05:14+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T01:05:14+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 00:00:00+09:00", "price": 441.22, "ts_jst": "2025-10-03T01:05:14+09:00"}
+{"type": "stage", "name": "done", "position": "LONG", "pnl_cum": 0.0, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T01:05:14+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1094.236135482788, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T02:13:02+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T02:13:02+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 01:00:00+09:00", "price": 448.25, "ts_jst": "2025-10-03T02:13:02+09:00"}
+{"type": "close", "reason": "TP", "price": 448.025875, "size": 11.52286136, "pnl_jpy": 144.80004198582435, "pnl_cum": 144.80004198582435, "ts_jst": "2025-10-03T02:13:02+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T02:13:02+09:00"}
+{"type": "exception", "context": "fetch_ohlcv_latest_ccxt", "error": "load_markets failed after 3 retries: binance GET https://fapi.binance.com/fapi/v1/exchangeInfo", "traceback": "Traceback (most recent call last):\n  File \"/Users/morimotokazuki/work/g-bot/gc_bot/runner.py\", line 40, in run_hourly_cycle\n    df = fetch_ohlcv_latest_ccxt(ccxt_cfg)\n  File \"/Users/morimotokazuki/work/g-bot/gc_bot/data.py\", line 117, in fetch_ohlcv_latest_ccxt\n    raise RuntimeError(f\"load_markets failed after {cfg.max_retries} retries: {last_err}\")\nRuntimeError: load_markets failed after 3 retries: binance GET https://fapi.binance.com/fapi/v1/exchangeInfo\n", "ts_jst": "2025-10-03T04:04:32+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": false, "latency_ms": 2911253.5791397095, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"error": "load_markets failed after 3 retries: binance GET https://fapi.binance.com/fapi/v1/exchangeInfo"}, "ts_jst": "2025-10-03T04:04:33+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1210.724115371704, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T04:19:50+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T04:19:50+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 03:00:00+09:00", "price": 451.01, "ts_jst": "2025-10-03T04:19:50+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T04:19:50+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1136.57808303833, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T05:09:49+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T05:09:49+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 04:00:00+09:00", "price": 454.92, "ts_jst": "2025-10-03T05:09:49+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T05:09:49+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1242.945909500122, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T06:16:48+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T06:16:48+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 05:00:00+09:00", "price": 450.56, "ts_jst": "2025-10-03T06:16:48+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T06:16:48+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1763284.1701507568, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T07:50:28+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T07:50:28+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 06:00:00+09:00", "price": 447.79, "ts_jst": "2025-10-03T07:50:28+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T07:50:28+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1482638.2420063019, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T08:33:04+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T08:33:04+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 07:00:00+09:00", "price": 446.44, "ts_jst": "2025-10-03T08:33:04+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T08:33:04+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1374829.2679786682, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T09:32:23+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T09:32:23+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 08:00:00+09:00", "price": 447.26, "ts_jst": "2025-10-03T09:32:23+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T09:32:23+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1202.1558284759521, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T10:09:58+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T10:09:58+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 09:00:00+09:00", "price": 445.48, "ts_jst": "2025-10-03T10:09:58+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T10:09:58+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1187.624216079712, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T11:10:18+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T11:10:18+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 10:00:00+09:00", "price": 444.67, "ts_jst": "2025-10-03T11:10:18+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T11:10:18+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1216.2916660308838, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T12:14:36+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T12:14:36+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 11:00:00+09:00", "price": 447.28, "ts_jst": "2025-10-03T12:14:36+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T12:14:36+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1195.0409412384033, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T13:15:35+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T13:15:35+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 12:00:00+09:00", "price": 447.11, "ts_jst": "2025-10-03T13:15:35+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T13:15:35+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1238.4400367736816, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T14:14:23+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T14:14:23+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 13:00:00+09:00", "price": 449.04, "ts_jst": "2025-10-03T14:14:23+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T14:14:23+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1204.977035522461, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T15:13:11+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T15:13:11+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 14:00:00+09:00", "price": 447.89, "ts_jst": "2025-10-03T15:13:11+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T15:13:11+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1173.5610961914062, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T16:13:44+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T16:13:44+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 15:00:00+09:00", "price": 447.52, "ts_jst": "2025-10-03T16:13:44+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T16:13:44+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1080.5351734161377, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T17:09:21+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T17:09:21+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 16:00:00+09:00", "price": 448.7, "ts_jst": "2025-10-03T17:09:21+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T17:09:21+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1260.7669830322266, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T18:16:46+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T18:16:46+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 17:00:00+09:00", "price": 451.28, "ts_jst": "2025-10-03T18:16:46+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T18:16:46+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 643801.4950752258, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T19:28:48+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T19:28:48+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 18:00:00+09:00", "price": 449.31, "ts_jst": "2025-10-03T19:28:48+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T19:28:48+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1316.514015197754, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T20:21:26+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T20:21:26+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 19:00:00+09:00", "price": 450.04, "ts_jst": "2025-10-03T20:21:26+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T20:21:26+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1357.8712940216064, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T21:19:50+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T21:19:50+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 20:00:00+09:00", "price": 448.47, "ts_jst": "2025-10-03T21:19:50+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T21:19:50+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1532.8266620635986, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T22:07:00+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T22:07:00+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 21:00:00+09:00", "price": 446.25, "ts_jst": "2025-10-03T22:07:00+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T22:07:00+09:00"}
+{"type": "api_call", "name": "ccxt.fetch_ohlcv_or_trades", "ok": true, "latency_ms": 1360.2159023284912, "request": {"symbol": "XRP/JPY", "timeframe": "1h"}, "response": {"rows": 200}, "ts_jst": "2025-10-03T23:05:58+09:00"}
+{"type": "stage", "name": "fetched", "rows": 200, "ts_jst": "2025-10-03T23:05:58+09:00"}
+{"type": "signal", "is_gc": false, "already": false, "bar_ts": "2025-10-03 22:00:00+09:00", "price": 446.64, "ts_jst": "2025-10-03T23:05:58+09:00"}
+{"type": "stage", "name": "done", "position": "FLAT", "pnl_cum": 144.80004198582435, "last_gc_bar_ts": "2025-10-02T08:00:00+09:00", "ts_jst": "2025-10-03T23:05:58+09:00"}

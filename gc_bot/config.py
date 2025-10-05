@@ -88,6 +88,8 @@ class RunnerConfig:
     taker_fee_bps: float = 15.0
     api_key: Optional[str] = None
     secret: Optional[str] = None
+    initial_capital: float = 100000.0
+    notional_fraction: Optional[float] = None
 
 
 __all__ = [

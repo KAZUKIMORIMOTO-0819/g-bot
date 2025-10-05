@@ -4,10 +4,10 @@
   "size": 0.0,
   "tp": 0.0,
   "sl": 0.0,
-  "pnl_cum": 0.0,
+  "pnl_cum": 17692.883041985828,
   "streak_loss": 0,
-  "last_gc_bar_ts": null,
+  "last_gc_bar_ts": "2025-10-02T08:00:00+09:00",
   "entry_ts_jst": null,
-  "last_updated_jst": "2025-09-28T19:05:11+09:00",
+  "last_updated_jst": "2025-10-05T18:05:06+09:00",
   "last_daily_summary_date": null
 }

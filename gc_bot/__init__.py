@@ -1,6 +1,7 @@
 """GC bot package exposing high level entry points."""
 
 from .config import CCXTConfig, SignalParams, OrderParams, SlackConfig, RunnerConfig, load_env_settings
+from .backtest import BacktestConfig, BacktestResult, BacktestTrade, run_backtest
 from .state import BotState, StateStore
 from .data import fetch_ohlcv_latest_ccxt, load_latest_cached_ccxt, add_sma_columns, detect_golden_cross_latest, update_state_after_signal
 from .orders import place_market_buy, place_market_sell, close_if_reached_and_update
@@ -15,6 +16,9 @@ __all__ = [
     "SlackConfig",
     "RunnerConfig",
     "load_env_settings",
+    "BacktestConfig",
+    "BacktestTrade",
+    "BacktestResult",
     "BotState",
     "StateStore",
     "fetch_ohlcv_latest_ccxt",
@@ -32,4 +36,5 @@ __all__ = [
     "notify_daily_summary",
     "write_daily_metrics",
     "run_hourly_cycle",
+    "run_backtest",
 ]

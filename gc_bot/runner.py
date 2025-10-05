@@ -23,6 +23,16 @@ def _env_or(default: Any, *keys: str) -> Any:
     return default
 
 
+def _effective_notional(cfg: RunnerConfig, state) -> float:
+    """Determine notional size (JPY) for the next position."""
+    base_notional = cfg.notional_jpy
+    if cfg.notional_fraction is None:
+        return base_notional
+    current_capital = (cfg.initial_capital or 0.0) + float(getattr(state, "pnl_cum", 0.0) or 0.0)
+    notional = max(current_capital * cfg.notional_fraction, 0.0)
+    return notional if notional > 0 else base_notional
+
+
 def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
     """Execute single hourly cycle: fetch data, detect signals, trade actions, notifications."""
     logger = setup_structured_logger("runner")
@@ -101,9 +111,10 @@ def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
             close_res = None
 
             if should_open_from_signal(asdict(st), signal):
+                effective_notional = _effective_notional(cfg, st)
                 order_params = OrderParams(
                     mode=cfg.mode,
-                    notional_jpy=cfg.notional_jpy,
+                    notional_jpy=effective_notional,
                     slippage_bps=cfg.slippage_bps,
                     taker_fee_bps=cfg.taker_fee_bps,
                     api_key=_env_or(cfg.api_key, "BFX_API_KEY", "BITFLYER_API_KEY"),
@@ -113,7 +124,7 @@ def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
                     order_res = place_market_buy(cfg.symbol, signal["price"], order_params)
                     st = set_entry_from_order(st, order_res)
                     s.save(st)
-                    summary["order"] = {k: order_res[k] for k in ["mode", "price", "size", "tp", "sl", "order_id"]}
+                    summary["order"] = {k: order_res[k] for k in ["mode", "price", "size", "tp", "sl", "order_id", "notional_jpy"]}
                     write_jsonl({"type": "entry", **summary["order"]})
                     try:
                         notify_entry(slack, cfg.symbol, order_res["price"], order_res["size"], order_res["tp"], order_res["sl"])
@@ -125,9 +136,10 @@ def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
                     raise
             else:
                 current_close = float(df_feat.iloc[-1]["close"])
+                effective_notional = _effective_notional(cfg, st)
                 order_params = OrderParams(
                     mode=cfg.mode,
-                    notional_jpy=cfg.notional_jpy,
+                    notional_jpy=effective_notional,
                     slippage_bps=cfg.slippage_bps,
                     taker_fee_bps=cfg.taker_fee_bps,
                     api_key=_env_or(cfg.api_key, "BFX_API_KEY", "BITFLYER_API_KEY"),

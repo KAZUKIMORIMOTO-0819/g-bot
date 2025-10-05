@@ -74,33 +74,35 @@ tests/                 ... pytest 用スモークテスト
 - `place_market_buy` / `place_market_sell`:
   - `mode="paper"` はスリッページ/手数料を内部計算。
   - `mode="real"` は ccxt で発注し、filled/averageなどの情報を利用。
-  - 取引ログに追記し、共通フォーマットの dict を返す。
+  - 取引ログに追記し、共通フォーマットの dict を返す (動的ノーションは `notional_jpy` として保存)。
 - `is_exit_reached`: 現在価格が TP/SL に達したか判定。
 - `find_last_buy_fee_from_trades`: 決済時に買い手数料を参照。
 - `append_trade_outcome_row`: `mode=summary` の補足行を trades.csv に追記。
 - `realize_pnl_and_update_state`: 実現損益（手数料込み）を計算し、`BotState` を FLAT に戻す。
-- `close_if_reached_and_update`: TP/SL判定→成行売り→PnL計算→state保存→ログ追記を一括実行。
+- `close_if_reached_and_update`: TP/SL判定→成行売り→実現損益計算→state保存→summary 行追記→JSONL までを一括実行し、`{reason, close_result, pnl_jpy, state}` を返す（未到達時は None）。
 
 ### 4.5 notifications.py
 - `send_slack_message`: Webhook無しの場合は no-op の True。指数バックオフリトライ。
 - フォーマッタ: `fmt_signal_gc`, `fmt_entry`, `fmt_close`, `fmt_error`, `fmt_daily_summary`。
-- `notify_gc`, `notify_entry`, `notify_close`, `notify_error`, `notify_daily_summary` が SlackConfig を受け取り送信。
+- `notify_gc`, `notify_entry`, `notify_close`, `notify_error`, `notify_daily_summary`: SlackConfig を受け取り送信。`notify_daily_summary` は `state.json` と `trades.csv` を読み日次レポートを作成。
+- `notify_runner_status`: ランナーやバックフィル開始/完了/失敗をステータス通知。`scripts/run_once.py` や `scripts/run_scheduler.py` が利用。
 
 ### 4.6 logging_utils.py
 - ログ出力先をディレクトリ単位で設定し、存在しなければ作成。
 - `setup_structured_logger`: コンソール & `app.log` への INFO ログ。
-- `write_jsonl`: 日付別 JSONL (`logs/jsonl/YYYYMMDD.jsonl`) を追記。
+- `write_jsonl`: 日付別 JSONL (`logs/jsonl/YYYYMMDD.jsonl`) を追記。呼び出しごとに `ts_jst` を自動付与し、`stage`/`signal`/`entry`/`close`/`trade_log`/`daily_metrics` などのイベントを記録。
 - `log_api_call`: API呼び出し結果をログ + JSONL に書き込み。
 - `log_exception`: 例外内容とスタックトレースを構造化。
 - `append_trade_log`: 補助的に trades.csv と JSONL に任意イベントを記録。
 
 ### 4.7 metrics.py
-- `build_daily_summary`: 当日 `trades.csv` から勝敗数・PnL を集計。
+- `build_daily_summary`: 当日 `trades.csv` の `mode=summary` 行を優先して勝敗数・PnL を集計し、summary が無い場合は売り約定から推定。
 - `_equity_curve_from_trades` / `_max_drawdown_from_equity`: summary 行から累積損益カーブと最大ドローダウンを算出。
-- `write_daily_metrics`: 当日分メトリクスを `metrics.csv` に冪等更新、JSONL にも記録。
+- `write_daily_metrics`: 1日1行になるよう既存行を差し替えて `metrics.csv` を冪等更新し、`daily_metrics` イベントを JSONL にも書き出す。
 
 ### 4.8 runner.py
 - `_env_or`: RunnerConfig の APIキー/secret を環境変数とマージ。
+- `_effective_notional`: RunnerConfig と BotState から投入額(JPY)を決定。`notional_fraction` 指定時は総資金×割合、未指定時は固定 `notional_jpy`。
 - `run_hourly_cycle` 処理フロー:
   1. ロガー初期化・SlackConfig 生成。
   2. `StateStore` を `with` 管理で開く（ロック取得、stateロード）。
@@ -108,24 +110,27 @@ tests/                 ... pytest 用スモークテスト
   4. 取得データが `SignalParams.long_window` 未満の場合: WARNING を出し、JSONL に `insufficient_data` を書き、Slackにもエラー通知、サマリを返して終了。
   5. 十分なデータがある場合: `add_sma_columns`→`detect_golden_cross_latest` でシグナル生成、イベントを JSONL に記録。
   6. GC成立かつ重複でない場合、Slackに通知。
-  7. `should_open_from_signal` が True なら `place_market_buy`→`set_entry_from_order`→state保存→Slack通知。
+  7. `should_open_from_signal` が True なら `_effective_notional` で算出した投入額を用いて `place_market_buy`→`set_entry_from_order`→state保存→Slack通知。
   8. それ以外で Long 建玉があれば `close_if_reached_and_update` を実行し、決済が行われた場合は Slack通知と JSONL 追記。
   9. `update_state_after_signal` の結果から `last_gc_bar_ts` を更新し、state 保存。
-  10. `summary` にステージ情報を格納して返却。
+  10. `summary` に `stage`/`signal`/`order`/`close`/`state_meta` などを格納しつつ `write_jsonl` で `done` ステージを記録して返却。
 - 例外発生時: `notify_error` を試行し、再度 raise。
 
 ## 5. 実行スクリプト
 ### 5.1 scripts/run_once.py
 - コマンドライン引数から `RunnerConfig` を生成し `run_hourly_cycle` を1回実行、結果を JSON 出力。
 - `load_env_settings()` で `.env` ロード。
+- 実行開始/完了/失敗を `notify_runner_status` で Slack に通知し、失敗時は例外内容を添付。
 
 ### 5.2 scripts/run_scheduler.py
 - `schedule` ライブラリで毎時 `:05` に `run_hourly_cycle` を実行。
 - メインループは5秒間隔で `schedule.run_pending()` を呼び続ける。
+- 各サイクルの開始・成功・失敗を `notify_runner_status` で Slack に通知。
 
 ### 5.3 scripts/backfill_data.py
 - 指定した `CCXTConfig` で `fetch_ohlcv_latest_ccxt` を呼び出し、CSV/Parquet キャッシュを作成。
 - 結果のメタ情報（保存パス等）を標準出力。
+- バックフィルの開始/完了/失敗を `notify_runner_status` で Slack に送信。
 
 ## 6. ログ・ファイル入出力
 - `./data/candles/logs/xrpjpy_1h_*.csv`: 各取得タイミングの生データ。

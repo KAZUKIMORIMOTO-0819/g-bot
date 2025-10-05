@@ -18,6 +18,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--notional", type=float, default=5000.0, help="Notional JPY per entry")
     parser.add_argument("--slippage-bps", type=float, default=5.0, help="Slippage in bps")
     parser.add_argument("--taker-fee-bps", type=float, default=15.0, help="Taker fee in bps")
+    parser.add_argument("--initial-capital", type=float, default=100000.0, help="Initial capital in JPY")
+    parser.add_argument("--notional-fraction", type=float, default=None, help="Fraction of capital per trade (e.g. 0.05 for 5%)")
     return parser.parse_args()
 
 
@@ -34,6 +36,8 @@ def main() -> None:
         notional_jpy=args.notional,
         slippage_bps=args.slippage_bps,
         taker_fee_bps=args.taker_fee_bps,
+        initial_capital=args.initial_capital,
+        notional_fraction=args.notional_fraction,
     )
     slack_cfg = SlackConfig()
     notify_runner_status(

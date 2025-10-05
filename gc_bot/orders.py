@@ -32,15 +32,31 @@ def decide_order_size_jpy_to_amount(price: float, notional_jpy: float) -> float:
 def _fit_amount_to_market(exchange, symbol: str, amount: float) -> float:
     """Adjust amount to meet exchange precision/limits."""
     market = exchange.market(symbol)
-    min_amt = (market.get("limits", {}).get("amount", {}) or {}).get("min", 0.0) or 0.0
-    precision = (market.get("precision", {}) or {}).get("amount", None)
-    if isinstance(precision, int):
-        quant = 10 ** precision
-        adj = (int(amount * quant)) / quant
-    else:
-        adj = amount
+    amount_limits = (market.get("limits", {}).get("amount", {}) or {})
+    min_amt = amount_limits.get("min", 0.0) or 0.0
+
+    try:
+        adj = float(exchange.amount_to_precision(symbol, amount))
+    except Exception:
+        precision = (market.get("precision", {}) or {}).get("amount", None)
+        if isinstance(precision, int):
+            quant = 10 ** precision
+            adj = (int(amount * quant)) / quant
+        else:
+            adj = amount
+
+    step = amount_limits.get("step") or 0.0
+    if step:
+        try:
+            adj = (int(adj / step)) * step
+        except Exception:
+            pass
+
+    adj = float(f"{adj:.6f}") if adj else adj
+
     if min_amt and adj < min_amt:
         return 0.0
+
     return float(adj)
 
 
@@ -130,10 +146,15 @@ def place_market_buy(
         if adj_size <= 0:
             raise ValueError("Calculated order size below exchange min/precision")
         order = exchange_for_real.create_order(symbol=symbol, type="market", side="buy", amount=adj_size)
-        order_id = order.get("id")
-        filled = float(order.get("filled", adj_size))
-        avg = float(order.get("average") or order.get("price") or ref_price)
-        fill_price = avg
+        order_id = order.get("id") or order.get("info", {}).get("child_order_acceptance_id")
+        filled = order.get("filled")
+        if filled is None or float(filled or 0.0) <= 0:
+            filled = order.get("amount") or adj_size
+        filled = float(filled)
+        avg = order.get("average") or order.get("price")
+        if avg is None or float(avg or 0.0) <= 0:
+            avg = ref_price
+        fill_price = float(avg)
         size = filled
         notional = fill_price * size
         fee_cost = None
@@ -210,10 +231,15 @@ def place_market_sell(
         if adj_size <= 0:
             raise ValueError("Calculated close size below exchange min/precision")
         order = exchange_for_real.create_order(symbol=symbol, type="market", side="sell", amount=adj_size)
-        order_id = order.get("id")
-        filled = float(order.get("filled", adj_size))
-        avg = float(order.get("average") or order.get("price") or ref_price)
-        fill_price = avg
+        order_id = order.get("id") or order.get("info", {}).get("child_order_acceptance_id")
+        filled = order.get("filled")
+        if filled is None or float(filled or 0.0) <= 0:
+            filled = order.get("amount") or adj_size
+        filled = float(filled)
+        avg = order.get("average") or order.get("price")
+        if avg is None or float(avg or 0.0) <= 0:
+            avg = ref_price
+        fill_price = float(avg)
         notional = fill_price * filled
         fee_cost = None
         if order.get("fees"):
