@@ -90,6 +90,10 @@ class RunnerConfig:
     secret: Optional[str] = None
     initial_capital: float = 100000.0
     notional_fraction: Optional[float] = None
+    use_rsi_filter: bool = False
+    rsi_period: int = 14
+    rsi_min: Optional[float] = None
+    rsi_max: Optional[float] = None
 
 
 __all__ = [

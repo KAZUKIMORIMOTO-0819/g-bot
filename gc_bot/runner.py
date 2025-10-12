@@ -13,6 +13,7 @@ from .logging_utils import log_api_call, log_exception, setup_structured_logger,
 from .notifications import notify_close, notify_entry, notify_error, notify_gc
 from .orders import close_if_reached_and_update, place_market_buy
 from .state import StateStore, should_open_from_signal, set_entry_from_order
+from .strategies import add_gc_rsi_features, evaluate_gc_rsi_signal, GCAndRSIStrategyParams
 
 
 def _env_or(default: Any, *keys: str) -> Any:
@@ -83,16 +84,38 @@ def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
                 summary["reason"] = msg
                 return summary
 
-            df_feat = add_sma_columns(df, sig_params)
-
             last_gc_ts = st.last_gc_bar_ts
-            signal = detect_golden_cross_latest(df_feat, sig_params, last_signaled_bar_ts=last_gc_ts)
-            summary["signal"] = {
+
+            if cfg.use_rsi_filter:
+                strategy_params = GCAndRSIStrategyParams(
+                    signal=sig_params,
+                    rsi_period=cfg.rsi_period,
+                    min_rsi=cfg.rsi_min,
+                    max_rsi=cfg.rsi_max,
+                )
+                df_feat = add_gc_rsi_features(df, strategy_params)
+                signal = evaluate_gc_rsi_signal(df_feat, last_gc_ts, strategy_params)
+            else:
+                df_feat = add_sma_columns(df, sig_params)
+                signal = detect_golden_cross_latest(df_feat, sig_params, last_signaled_bar_ts=last_gc_ts)
+
+            summary_signal = {
                 "is_gc": signal["is_gc"],
                 "already": signal["already_signaled"],
                 "bar_ts": str(signal["bar_ts"]),
                 "price": signal["price"],
             }
+            if "rsi" in signal:
+                summary_signal["rsi"] = signal["rsi"]
+
+            should_enter = should_open_from_signal(asdict(st), signal)
+            if cfg.use_rsi_filter:
+                passes_filter = bool(signal.get("passes_rsi_filter"))
+                summary_signal["passes_rsi_filter"] = passes_filter
+                should_enter = should_enter and passes_filter
+            summary_signal["should_enter"] = should_enter
+
+            summary["signal"] = summary_signal
             write_jsonl({"type": "signal", **summary["signal"]})
 
             if signal["is_gc"] and not signal["already_signaled"]:
@@ -110,7 +133,7 @@ def run_hourly_cycle(cfg: RunnerConfig) -> Dict[str, Any]:
             order_res = None
             close_res = None
 
-            if should_open_from_signal(asdict(st), signal):
+            if should_enter:
                 effective_notional = _effective_notional(cfg, st)
                 order_params = OrderParams(
                     mode=cfg.mode,

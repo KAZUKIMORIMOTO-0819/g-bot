@@ -20,6 +20,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--taker-fee-bps", type=float, default=15.0, help="Taker fee in bps")
     parser.add_argument("--initial-capital", type=float, default=100000.0, help="Initial capital in JPY")
     parser.add_argument("--notional-fraction", type=float, default=None, help="Fraction of capital per trade (e.g. 0.05 for 5%)")
+    parser.add_argument("--use-rsi-filter", action="store_true", help="Enable RSI filter for GC entries")
+    parser.add_argument("--rsi-period", type=int, default=14, help="RSI period when filter is enabled")
+    parser.add_argument("--rsi-min", type=float, default=None, help="Minimum RSI threshold (inclusive)")
+    parser.add_argument("--rsi-max", type=float, default=None, help="Maximum RSI threshold (inclusive)")
     return parser.parse_args()
 
 
@@ -38,12 +42,16 @@ def main() -> None:
         taker_fee_bps=args.taker_fee_bps,
         initial_capital=args.initial_capital,
         notional_fraction=args.notional_fraction,
+        use_rsi_filter=args.use_rsi_filter,
+        rsi_period=args.rsi_period,
+        rsi_min=args.rsi_min,
+        rsi_max=args.rsi_max,
     )
     slack_cfg = SlackConfig()
     notify_runner_status(
         slack_cfg,
         "GC Bot Run (single) started",
-        f"mode={cfg.mode}, symbol={cfg.symbol}, state={cfg.state_path}",
+        f"mode={cfg.mode}, symbol={cfg.symbol}, state={cfg.state_path}, rsi={cfg.use_rsi_filter}",
     )
     try:
         result = run_hourly_cycle(cfg)
@@ -58,6 +66,9 @@ def main() -> None:
     summary_text = f"stage={result.get('stage')}"
     if "reason" in result:
         summary_text += f", reason={result['reason']}"
+    if cfg.use_rsi_filter:
+        sig = result.get('signal') or {}
+        summary_text += f", passes_rsi={sig.get('passes_rsi_filter')}"
     notify_runner_status(
         slack_cfg,
         "GC Bot Run (single) completed",

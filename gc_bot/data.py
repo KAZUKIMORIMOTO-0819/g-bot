@@ -191,6 +191,142 @@ def fetch_ohlcv_latest_ccxt(cfg: CCXTConfig) -> pd.DataFrame:
     return df
 
 
+def _normalize_timestamp(value: Any, *, tz_default) -> pd.Timestamp:
+    ts = pd.Timestamp(value)
+    if ts.tzinfo is None:
+        ts = ts.tz_localize(tz_default)
+    return ts
+
+
+def fetch_ohlcv_range_ccxt(
+    cfg: CCXTConfig,
+    start: Any,
+    end: Any,
+    *,
+    chunk_limit: Optional[int] = None,
+    progress: bool = False,
+) -> pd.DataFrame:
+    """Fetch OHLCV rows over an explicit time range, handling pagination."""
+
+    start_jst = _normalize_timestamp(start, tz_default=TZ_JST)
+    end_jst = _normalize_timestamp(end, tz_default=TZ_JST)
+    if start_jst >= end_jst:
+        raise ValueError("start must be earlier than end")
+
+    start_utc = start_jst.tz_convert(TZ_UTC)
+    end_utc = end_jst.tz_convert(TZ_UTC)
+    start_ms = int(start_utc.timestamp() * 1000)
+    end_ms = int(end_utc.timestamp() * 1000)
+
+    exchange = _init_exchange(cfg)
+    last_err: Optional[Exception] = None
+    for attempt in range(1, cfg.max_retries + 1):
+        try:
+            exchange.load_markets()
+            break
+        except Exception as exc:
+            last_err = exc
+            time.sleep(cfg.retry_backoff_sec ** (attempt - 1))
+    else:
+        raise RuntimeError(f"load_markets failed after {cfg.max_retries} retries: {last_err}")
+
+    if cfg.symbol not in exchange.symbols:
+        raise ValueError(f"Symbol {cfg.symbol} not available on {cfg.exchange_id}")
+
+    has_direct = getattr(exchange, "has", {}).get("fetchOHLCV", False)
+    rows: List[List[Any]] = []
+    limit = chunk_limit or cfg.limit or 200
+    limit = max(int(limit), 1)
+    since_ms = start_ms
+    period_ms = cfg.period_sec * 1000
+    rate_limit = getattr(exchange, "rateLimit", None)
+
+    if not has_direct:
+        # fall back to trade aggregation in a single shot
+        raw_rows = _fetch_ohlcv_via_trades(exchange, cfg, since_ms, end_ms)
+        rows.extend(raw_rows)
+    else:
+        while since_ms <= end_ms:
+            window_limit = min(limit, int(((end_ms - since_ms) / period_ms) + 5))
+            if window_limit <= 0:
+                break
+            chunk: List[List[Any]] = []
+            for attempt in range(1, cfg.max_retries + 1):
+                try:
+                    chunk = exchange.fetch_ohlcv(
+                        symbol=cfg.symbol,
+                        timeframe=cfg.timeframe,
+                        since=since_ms,
+                        limit=window_limit,
+                    )
+                    break
+                except Exception as exc:
+                    last_err = exc
+                    time.sleep(cfg.retry_backoff_sec ** (attempt - 1))
+            else:
+                raise RuntimeError(f"Data fetch failed after {cfg.max_retries} retries: {last_err}")
+
+            if not chunk:
+                break
+            rows.extend(chunk)
+            last_ts = chunk[-1][0]
+            next_since = last_ts + period_ms
+            if next_since <= since_ms:
+                # guard against non-advancing pagination
+                next_since = since_ms + period_ms
+            since_ms = next_since
+
+            if progress:
+                pct = min(100.0, (since_ms - start_ms) / max(1, end_ms - start_ms) * 100.0)
+                logging.getLogger(__name__).info(
+                    "fetch_ohlcv_range progress %.1f%% rows=%d", pct, len(rows)
+                )
+
+            if rate_limit:
+                time.sleep(rate_limit / 1000.0)
+
+    if not rows:
+        raise ValueError("No OHLCV rows acquired for requested range")
+
+    df = pd.DataFrame(rows, columns=["timestamp_ms", "open", "high", "low", "close", "volume"])
+    df = df.drop_duplicates(subset="timestamp_ms", keep="last")
+    df = df[(df["timestamp_ms"] >= start_ms) & (df["timestamp_ms"] <= end_ms)]
+    if df.empty:
+        raise ValueError("Fetched data did not overlap with requested window")
+    df = df.sort_values("timestamp_ms")
+
+    df["close_time_utc"] = pd.to_datetime(df["timestamp_ms"], unit="ms", utc=True)
+    df["open_time_utc"] = df["close_time_utc"] - pd.to_timedelta(cfg.period_sec, unit="s")
+    df["close_time_jst"] = df["close_time_utc"].dt.tz_convert(TZ_JST)
+    df["open_time_jst"] = df["open_time_utc"].dt.tz_convert(TZ_JST)
+
+    df = df.set_index("close_time_jst")[
+        [
+            "open_time_jst",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "open_time_utc",
+            "close_time_utc",
+            "timestamp_ms",
+        ]
+    ]
+
+    df.attrs["meta"] = {
+        "exchange": cfg.exchange_id,
+        "symbol": cfg.symbol,
+        "timeframe": cfg.timeframe,
+        "period_sec": cfg.period_sec,
+        "rows": len(df),
+        "start_jst": start_jst.isoformat(timespec="seconds"),
+        "end_jst": end_jst.isoformat(timespec="seconds"),
+        "used_method": "fetchOHLCV" if has_direct else "trades_aggregate",
+    }
+    return df
+
+
 def load_latest_cached_ccxt() -> pd.DataFrame:
     """Load cached ccxt OHLCV data from parquet or CSV logs."""
     pq_path = DATA_DIR / "xrpjpy_1h_latest.parquet"
@@ -277,4 +413,5 @@ __all__ = [
     "update_state_after_signal",
     "LOG_DIR",
     "DATA_DIR",
+    "fetch_ohlcv_range_ccxt",
 ]
